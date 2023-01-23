@@ -86,12 +86,9 @@ def get_video_files(file_path: Path) -> list:
     if os.path.exists(file_path):
         for video_type in video_types:
             # get the list of files from the provided path
-            file_list += glob.glob(f"{file_path}/*{video_type}")
-        folder_structure = {}
-        # TODO: set up folder_structure == {"Season 1": # of episodes}
+            file_list += glob.glob(f"{file_path}/**/*{video_type}")
         # mirror folder structure into a dictionary
-        occurrence = {item[:item.find("/")]: file_list.count(item[:item.find("/")]) for item in file_list}
-
+        folder_structure = {Path(item).parts[-2]: len([i for i in file_list if Path(item).parts[-2] in i]) for item in file_list}
 
         # convert the list of video_files to a dictionary
         videos = {}
