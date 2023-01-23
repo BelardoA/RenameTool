@@ -6,6 +6,7 @@
 import glob
 import ntpath
 import os
+import platform
 import sys
 from pathlib import Path
 
@@ -159,8 +160,11 @@ def rename_files(file_list: dict) -> int:
             # get remove everything before the first dash
             new_name = f"{os.sep}{path}{os.sep}{season}{os.sep}S{season_num}E{ep_number} {episode_name[episode_name.find('-'):]}"
 
-            # get the episode number
-            os.rename(episode, new_name)
+            if "Linux" in platform.system():
+                # get the episode number
+                os.system(f'sudo mv "{episode}" "{new_name}"')
+            elif "Windows" in platform.system():
+                os.system(f'mv "{episode}" "{new_name}"')
 
             # increment our counters
             episode_num += 1
