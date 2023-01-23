@@ -109,7 +109,7 @@ def get_video_files(file_path: Path) -> dict:
                 episode_number = get_episode_number(episode_name)
 
                 # add the episode to the season list
-                videos[season_dir].insert(episode_number - 1, episode_name)
+                videos[season_dir].insert(episode_number - 1, file)
     else:
         console.print(
             f"[red]The provided file path doesn't exist! Provided: {file_path}"
@@ -125,7 +125,38 @@ def rename_files(file_list: dict) -> None:
     :param dict file_list: dictionary of files that need to be renamed
     :return: None
     """
-    print(file_list)
 
+    def format_number(number: str) -> str:
+        """
+        Function to format a number into 2 digit string
+        :param int number: episode or season number to convert
+        :return: XX format of the provided number
+        :rtype: str
+        """
+        return str(number) if len(number) == 2 else f"0{number}"
 
-vidyas = get_video_files(Path(os.getcwd()))
+    # create a counter for files renamed
+    counter = 0
+
+    for season, episodes in file_list.items():
+        # start episode counter at 1
+        episode_num = 1
+
+        # parse the season #
+        season_num = format_number(season.split(" ")[-1])
+        # iterate through the season's episodes and rename them
+        for episode in episodes:
+            # parse the episode name
+            episode_name = Path(episode).parts[-1]
+
+            # format episode number
+            ep_number = format_number(str(episode_num))
+
+            # get the episode's path
+            path = f"{os.sep}".join(list(Path(episode).parts)[1:-2])
+
+            # get remove everything before the first dash
+            new_name = f"{os.sep}{path}{os.sep}{season}{os.sep}S{season_num}E{ep_number} {episode_name[episode_name.find('-'):]}"
+
+            # get the episode number
+            os.rename(episode, new_name)
