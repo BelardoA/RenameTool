@@ -119,11 +119,12 @@ def get_video_files(file_path: Path) -> dict:
     return videos
 
 
-def rename_files(file_list: dict) -> None:
+def rename_files(file_list: dict) -> int:
     """
     Function to rename the items in the provided file_list
     :param dict file_list: dictionary of files that need to be renamed
-    :return: None
+    :return: # of files that were renamed
+    :rtype: int
     """
 
     def format_number(number: str) -> str:
@@ -160,3 +161,9 @@ def rename_files(file_list: dict) -> None:
 
             # get the episode number
             os.rename(episode, new_name)
+
+            # increment our counters
+            episode_num += 1
+            counter += 1
+    # return counter for console output
+    return counter

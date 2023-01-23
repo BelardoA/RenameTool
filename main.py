@@ -6,6 +6,7 @@
 import click
 from path import Path
 from rich.console import Console
+from functions import get_video_files, rename_files
 
 # start Console object for pretty output in console
 console = Console()
@@ -33,7 +34,10 @@ def rename_from_root(root: Path) -> None:
     :param Path root:
     :return: None
     """
+    # get the video files that need to be renamed
+    videos = get_video_files(root)
 
+    # rename the files while storing the # of files renamed
+    rename_counter = rename_files(videos)
 
-if __name__ == "__main__":
-    print("We made it.")
+    console.print(f"[green] Renamed {rename_counter} files in {root}")
