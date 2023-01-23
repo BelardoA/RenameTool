@@ -19,7 +19,7 @@ def cli():
 
 
 # add command to rename files within the provided directory
-@click.command("rename_from_root")
+@cli.command("rename_from_root")
 @click.option(
     "--root",
     type=click.Path(exists=True, dir_okay=True, file_okay=False, path_type=Path),
