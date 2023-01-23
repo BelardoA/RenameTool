@@ -41,3 +41,7 @@ def rename_from_root(root: Path) -> None:
     rename_counter = rename_files(videos)
 
     console.print(f"[green] Renamed {rename_counter} files in {root}")
+
+
+if __name__ == "__main__":
+    cli()
