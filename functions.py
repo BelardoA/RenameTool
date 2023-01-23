@@ -46,13 +46,14 @@ def get_episode_number(episode_name: str) -> int:
     :return: The provided episode_name's episode #
     :rtype: int
     """
-    # see if spaces are used in filename
-    split_char = " " if episode_name.find(" ") > 0 else None
-
+    # see if underscores are used
+    split_char = "_" if episode_name.find("_") > 0 else None
     if not split_char:
-        # see if underscores are used
-        split_char = "_" if episode_name.find("_") > 0 else None
-
+        # see if - are used
+        split_char = "-" if episode_name.find("-") > 0 else None
+    if not split_char:
+        # see if spaces are used in filename
+        split_char = " " if episode_name.find(" ") > 0 else None
     # split the provided file name at spaces
     if split_char:
         split_episode_name = episode_name.split(split_char)
@@ -64,6 +65,15 @@ def get_episode_number(episode_name: str) -> int:
                 # means item is an integer, return it
                 break
             except ValueError:
+                # split by spaces
+                split_item = item.split(" ")
+                for string in split_item:
+                    try:
+                        episode_number = int(string)
+                        return episode_number
+                    except ValueError:
+                        # continue to the next split_item
+                        continue
                 # continue to the next item
                 continue
     else:
