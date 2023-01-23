@@ -3,7 +3,6 @@
 """ Python script to rename files within subdirectories with SXXEXX prefix for plex"""
 
 # standard python imports
-import glob
 import click
 from path import Path
 from rich.console import Console
@@ -16,6 +15,7 @@ console = Console()
 @click.group()
 def cli():
     """Welcome to the Rename CLI tool!"""
+
 
 # add command to rename files within the provided directory
 @click.command("rename_from_root")

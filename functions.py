@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """ Miscellaneous functions that are used in main.py """
-import sys
 
 # standard python imports
-from pathlib import Path
 import glob
-import fnmatch
-import os
 import ntpath
+import os
+import sys
+from pathlib import Path
+
 from rich.console import Console
 
 console = Console()
@@ -61,21 +61,25 @@ def get_episode_number(episode_name: str) -> int:
             try:
                 episode_number = int(item)
                 # means item is an integer, return it
-                return episode_number
+                break
             except ValueError:
                 # continue to the next item
                 continue
     else:
         console.print(f"[red] Cannot parse episode number from {episode_name}")
+        episode_number = 0
+    # return the episode number
+    return episode_number
 
-def get_video_files(file_path: Path) -> list:
+
+def get_video_files(file_path: Path) -> dict:
     """
-    Function to go to the provided file_path and returns a list
+    Function to go to the provided file_path and returns a dictionary
     of all the files within the provided path
     :param Path file_path: Directory to get all files in
     :raises: General error if the provided file_path doesn't exist
-    :return: list of files in the provided directory
-    :rtype: list
+    :return: dictionary of files in the provided directory
+    :rtype: dict
     """
     # plex supported videos
     video_types = [".mp4", ".mkv", ".wmv", ".mpeg", ".mpegts", ".mov", ".avi", ".asf"]
@@ -88,29 +92,40 @@ def get_video_files(file_path: Path) -> list:
             # get the list of files from the provided path
             file_list += glob.glob(f"{file_path}/**/*{video_type}")
         # mirror folder structure into a dictionary
-        folder_structure = {Path(item).parts[-2]: len([i for i in file_list if Path(item).parts[-2] in i]) for item in file_list}
+        folders = {
+            Path(item).parts[-2]: len(
+                [i for i in file_list if Path(item).parts[-2] in i]
+            )
+            for item in file_list
+        }
 
-        # convert the list of video_files to a dictionary
-        videos = {}
+        # convert the list of video_files to a dictionary following the folders
+        videos = {folder: [] for folder in folders}
         for file in file_list:
             if get_file_type(file) in video_types:
-                season_dir = Path(file).parent
+                # parse the needed information from the file path
+                season_dir = Path(file).parts[-2]
                 episode_name = get_file_name(file)
                 episode_number = get_episode_number(episode_name)
-                # check to see if key exists for the season, create it if not
-                if season_dir in videos.keys():
-                    videos[season_dir].insert(episode_number, episode_name)
-                else:
-                    # add the key to videos dictionary
-                    videos[season_dir] = [episode_name]
 
-            # append the episode to the season's list at the episodes # index
-
+                # add the episode to the season list
+                videos[season_dir].insert(episode_number - 1, episode_name)
     else:
-        console.print(f"[red]The provided file path doesn't exist! Provided: {file_path}")
+        console.print(
+            f"[red]The provided file path doesn't exist! Provided: {file_path}"
+        )
         sys.exit(1)
     # return the list of files
-    return file_list
+    return videos
 
 
-get_video_files(Path(os.getcwd()))
+def rename_files(file_list: dict) -> None:
+    """
+    Function to rename the items in the provided file_list
+    :param dict file_list: dictionary of files that need to be renamed
+    :return: None
+    """
+    print(file_list)
+
+
+vidyas = get_video_files(Path(os.getcwd()))
