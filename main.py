@@ -6,6 +6,7 @@
 from pathlib import Path
 
 import click
+import time
 from rich.console import Console
 
 from functions import get_video_files, rename_files
@@ -42,13 +43,15 @@ def _rename_from_root(root: Path) -> None:
     :param Path root: Directory path to the root directory containing season sub-folders
     :return: None
     """
+    start_time = time.time()
     # get the video files that need to be renamed
     videos = get_video_files(root)
 
     # rename the files while storing the # of files renamed
     rename_counter = rename_files(videos)
-
-    console.print(f"[green] Renamed {rename_counter} files in {root}")
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    console.print(f"[green] Renamed {rename_counter} files in {elapsed_time} second(s).")
 
 
 if __name__ == "__main__":
