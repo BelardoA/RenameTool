@@ -3,9 +3,11 @@
 """ Python script to rename files within subdirectories with SXXEXX prefix for plex"""
 
 # standard python imports
+from pathlib import Path
+
 import click
-from path import Path
 from rich.console import Console
+
 from functions import get_video_files, rename_files
 
 # start Console object for pretty output in console
