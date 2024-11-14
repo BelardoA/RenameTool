@@ -5,7 +5,7 @@ Class for easier parsing of video information
 from pathlib import Path
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class VideoFile(BaseModel):
@@ -18,6 +18,9 @@ class VideoFile(BaseModel):
     )
     episode: int = Field(
         ..., title="Episode Number", description="The episode number of the video file"
+    )
+    episode_name: Optional[str] = Field(
+        "", title="Episode Name", description="The name of the episode"
     )
     file_path: Path = Field(
         ..., title="File Path", description="The path to the video file"
@@ -37,3 +40,18 @@ class VideoFile(BaseModel):
     index: int = Field(
         ..., title="Index", description="The index of the video file in the directory"
     )
+
+    @model_validator(mode="after")
+    def determine_new_name(self):
+        """
+        Method to determine the new name of the video file
+        :return: The new name of the video file
+        """
+        import re
+
+        pattern = re.compile(r"\s*episode\s*", re.IGNORECASE)
+        episode_name = f" {self.episode_name}" if self.episode_name else ""
+        episode_name = (
+            f"S{self.season:02}E{self.episode:02}{episode_name}{self.file_type}"
+        )
+        self.new_name = pattern.sub("", episode_name)
