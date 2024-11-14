@@ -3,9 +3,12 @@
 """ Python script to rename files within subdirectories with SXXEXX prefix for plex"""
 
 # standard python imports
+from pathlib import Path
+
 import click
-from path import Path
+import time
 from rich.console import Console
+
 from functions import get_video_files, rename_files
 
 # start Console object for pretty output in console
@@ -28,19 +31,27 @@ def cli():
     required=True,
 )
 def rename_from_root(root: Path) -> None:
+    """Walks the provided root directory and renames all video files within the season sub-folders to match
+    SXXEXX format."""
+    _rename_from_root(root)
+
+
+def _rename_from_root(root: Path) -> None:
     """
-    Function to rename all files within the sub-folders in
-    the provided root path to have a SXXEXX prefix
-    :param Path root:
+    Function to rename all files within the sub-folders in the provided root path to have a SXXEXX prefix
+
+    :param Path root: Directory path to the root directory containing season sub-folders
     :return: None
     """
+    start_time = time.time()
     # get the video files that need to be renamed
     videos = get_video_files(root)
 
     # rename the files while storing the # of files renamed
     rename_counter = rename_files(videos)
-
-    console.print(f"[green] Renamed {rename_counter} files in {root}")
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    console.print(f"[green] Renamed {rename_counter} files in {elapsed_time} second(s).")
 
 
 if __name__ == "__main__":
