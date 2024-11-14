@@ -28,10 +28,16 @@ def cli():
     required=True,
 )
 def rename_from_root(root: Path) -> None:
+    """Walks the provided root directory and renames all video files within the season sub-folders to match
+    SXXEXX format."""
+    _rename_from_root(root)
+
+
+def _rename_from_root(root: Path) -> None:
     """
-    Function to rename all files within the sub-folders in
-    the provided root path to have a SXXEXX prefix
-    :param Path root:
+    Function to rename all files within the sub-folders in the provided root path to have a SXXEXX prefix
+
+    :param Path root: Directory path to the root directory containing season sub-folders
     :return: None
     """
     # get the video files that need to be renamed
