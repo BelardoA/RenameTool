@@ -3,6 +3,7 @@ Season 1
 Season 2
 .idea
 *.zip
-./dist
-./build
-./.eggs
+dist
+build
+.eggs
+*.egg-info
