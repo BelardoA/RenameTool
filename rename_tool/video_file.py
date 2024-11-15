@@ -45,11 +45,11 @@ class VideoFile(BaseModel):
         :return: The new name of the video file
         """
         pattern = re.compile(r"\s*episode\s*", re.IGNORECASE)
-        episode_name = f" {self.episode_name}" if self.episode_name else ""
+        episode_name = f"-{self.episode_name}" if self.episode_name else ""
         episode_name = f"S{self.season:02}E<epNumber>{episode_name}{self.file_type}"
         self.new_name = pattern.sub("", episode_name)
 
-    def update_new_name(self, index: int) -> None:
+    def update_new_name(self, index: int):
         """
         Method to update the new name of the video file
 
