@@ -1,5 +1,5 @@
 ## README.md
-![pylint](https://img.shields.io/badge/pylint-10.00-green?logo=python&logoColor=white)![example workflow](https://github.com/BelardoA/RenameTool/actions/workflows/push_workflow.yml/badge.svg?branch=main)
+![pylint](https://img.shields.io/badge/pylint-10.00-green?logo=python&logoColor=white) ![example workflow](https://github.com/BelardoA/RenameTool/actions/workflows/push_workflow.yml/badge.svg?branch=main)
 # Video File Renamer
 
 This project is a Python-based tool designed to rename video files within subdirectories to follow the `SXXEXX` format, which is commonly used by media servers like Plex. The tool parses video file information, determines the new name based on the season and episode numbers, and renames the files accordingly.
@@ -21,7 +21,7 @@ This project is a Python-based tool designed to rename video files within subdir
 
 2. Install the required dependencies:
     ```sh
-    pip install -r requirements.txt
+    pip install .
     ```
 
 ## Usage
@@ -50,7 +50,7 @@ tree /path/to/show
 The tool provides a CLI for renaming video files. Use the following command to rename files within a specified root directory:
 
 ```sh
-python rename_tool/main.py rename_from_root --root <path-to-root-directory>
+python rename_tool rename_from_root --root <path-to-root-directory>
 ```
 
 You will be prompted to enter the directory if not provided.
@@ -58,7 +58,7 @@ You will be prompted to enter the directory if not provided.
 ### Example
 
 ```sh
-python rename_tool/main.py rename_from_root --root /path/to/video/files
+python rename_tool rename_from_root --root /path/to/video/files
 ```
 
 #### This would rename the files to the following format:
