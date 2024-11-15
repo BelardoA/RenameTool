@@ -50,7 +50,7 @@ tree /path/to/show
 The tool provides a CLI for renaming video files. Use the following command to rename files within a specified root directory:
 
 ```sh
-python main.py rename_from_root --root <path-to-root-directory>
+python rename_tool/main.py rename_from_root --root <path-to-root-directory>
 ```
 
 You will be prompted to enter the directory if not provided.
@@ -58,7 +58,7 @@ You will be prompted to enter the directory if not provided.
 ### Example
 
 ```sh
-python main.py rename_from_root --root /path/to/video/files
+python rename_tool/main.py rename_from_root --root /path/to/video/files
 ```
 
 #### This would rename the files to the following format:
