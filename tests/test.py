@@ -1,26 +1,26 @@
 """
-This module contains the test cases for the code used in the main.py file.
+This module contains the test cases for the code used in the rename_tool.main.py file.
 The test cases are written using the unittest module and the mock.patch decorator is
-used to mock the functions that are called within the main.py file. The test cases
+used to mock the functions that are called within the rename_tool.main.py file. The test cases
 cover various scenarios such as renaming files in season subfolders, handling no
 files to rename, handling a large number of files, handling invalid file paths,
 handling files with no season or episode, and handling files with special characters.
-The test cases are written to ensure that the code in the main.py file works as
+The test cases are written to ensure that the code in the rename_tool.main.py file works as
 expected and handles all possible scenarios.
 """
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from main import _rename_from_root
+from rename_tool.main import _rename_from_root
 
 
 class TestRenameFiles(unittest.TestCase):
     """
     Class to test the applications functions
     """
-    @patch("main.get_video_files")
-    @patch("main.rename_files")
+    @patch("rename_tool.main.get_video_files")
+    @patch("rename_tool.main.rename_files")
     def test_rename_files_in_season_subfolders(
         self, mock_rename_files, mock_get_video_files
     ):
@@ -41,8 +41,8 @@ class TestRenameFiles(unittest.TestCase):
             [Path("S01E01.mp4"), Path("S01E02.mp4")]
         )
 
-    @patch("main.get_video_files")
-    @patch("main.rename_files")
+    @patch("rename_tool.main.get_video_files")
+    @patch("rename_tool.main.rename_files")
     def test_no_files_to_rename(self, mock_rename_files, mock_get_video_files):
         """
         Test to verify that the function handles no files to rename
@@ -59,8 +59,8 @@ class TestRenameFiles(unittest.TestCase):
         mock_get_video_files.assert_called_once_with(root)
         mock_rename_files.assert_called_once_with([])
 
-    @patch("main.get_video_files")
-    @patch("main.rename_files")
+    @patch("rename_tool.main.get_video_files")
+    @patch("rename_tool.main.rename_files")
     def test_handle_large_number_of_files(
         self, mock_rename_files, mock_get_video_files
     ):
@@ -83,8 +83,8 @@ class TestRenameFiles(unittest.TestCase):
             [Path(f"S01E{i:02}.mp4") for i in range(1, 101)]
         )
 
-    @patch("main.get_video_files")
-    @patch("main.rename_files")
+    @patch("rename_tool.main.get_video_files")
+    @patch("rename_tool.main.rename_files")
     def test_handle_invalid_file_paths(self, mock_rename_files, mock_get_video_files):
         """
         Test to verify that the function handles invalid file paths
@@ -104,8 +104,8 @@ class TestRenameFiles(unittest.TestCase):
         mock_get_video_files.assert_called_once_with(root)
         mock_rename_files.assert_called_once_with([Path("invalid_path.mp4")])
 
-    @patch("main.get_video_files")
-    @patch("main.rename_files")
+    @patch("rename_tool.main.get_video_files")
+    @patch("rename_tool.main.rename_files")
     def test_handle_files_with_no_season_or_episode(
         self, mock_rename_files, mock_get_video_files
     ):
@@ -124,8 +124,8 @@ class TestRenameFiles(unittest.TestCase):
         mock_get_video_files.assert_called_once_with(root)
         mock_rename_files.assert_called_once_with([Path("random_video.mp4")])
 
-    @patch("main.get_video_files")
-    @patch("main.rename_files")
+    @patch("rename_tool.main.get_video_files")
+    @patch("rename_tool.main.rename_files")
     def test_handle_files_with_special_characters(
         self, mock_rename_files, mock_get_video_files
     ):
