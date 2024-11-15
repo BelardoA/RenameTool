@@ -3,20 +3,25 @@ name: Format and Test
 on: [push]
 
 jobs:
-  build-and-test:
+  run-pylint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
     - uses: actions/checkout@v4
     - uses: kgpl/gh-pylint@v1
       with:
         package-path: rename_tool
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.9
         requirements-path: requirements.txt
         readme-path: README.md
         fail-below: 9.5
+  build-and-test:
+    runs-on: ubuntu-latest
+    needs: run-pylint
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
