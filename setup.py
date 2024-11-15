@@ -55,6 +55,7 @@ setup(
     package_data={},
     setup_requires=["rich==12.6.0", "cython"],
     install_requires=INSTALL_REQUIRES,
+    extras_require={"dev": DEV_REQUIRES + INSTALL_REQUIRES},
     # parse and increase the minor version number of the last item in SUPPORTED_PYTHON_VERSIONS
     python_requires=f">={SUPPORTED_PYTHON_VERSIONS[0]}, <{str(int(SUPPORTED_PYTHON_VERSIONS[-1].split('.')[0]) + 1)}",
     classifiers=CLASSIFIERS,
