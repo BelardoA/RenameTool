@@ -12,7 +12,7 @@ from typing import Optional
 
 from rich.console import Console
 
-from video_file import VideoFile
+from .video_file import VideoFile
 
 console = Console()
 
@@ -99,7 +99,6 @@ def get_video_files(file_path: Path) -> dict[str, list[VideoFile]]:
                         file_name=file.stem,
                         file_type=file.suffix,
                         directory=file.parent,
-                        index=files.index(file) + 1,
                     )
                 )
             # sort the season folder by lowest episode number
@@ -117,7 +116,8 @@ def rename_files(videos_by_season: dict[str, list[VideoFile]]) -> int:
     """
     Function to rename the items in the provided file_list
 
-    :param dict[str, list[VideoFile]] videos_by_season: Dictionary with a key for each season with a list of its videos
+    :param dict[str, list[VideoFile]] videos_by_season: Dictionary with a key
+     for each season with a list of its videos
     :return: # of files that were renamed
     :rtype: int
     """
@@ -127,17 +127,12 @@ def rename_files(videos_by_season: dict[str, list[VideoFile]]) -> int:
     for _, videos in videos_by_season.items():
         for video in videos:
             try:
-                ep_number = (
-                    video.episode
-                    if video.episode < videos.index(video) + 1
-                    else videos.index(video) + 1
-                )
-                video.new_name = video.new_name.replace("<epNumber>", f"{ep_number:02}")
+                video.update_new_name(videos.index(video) + 1)
                 os.rename(video.file_path, video.directory / video.new_name)
                 counter += 1
-            except Exception as e:
+            except OSError as err:
                 failed_files.append(video.file_name)
-                console.print(f"[red]Failed to rename {video.file_name} - {e}")
+                console.print(f"[red]Failed to rename {video.file_name} - {err}")
     # return counter for console output
     if failed_files:
         console.print(
