@@ -1,5 +1,5 @@
 ## README.md
-
+![pylint]()
 # Video File Renamer
 
 This project is a Python-based tool designed to rename video files within subdirectories to follow the `SXXEXX` format, which is commonly used by media servers like Plex. The tool parses video file information, determines the new name based on the season and episode numbers, and renames the files accordingly.
