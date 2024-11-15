@@ -29,7 +29,7 @@ def parse_episode_number_and_name(file_name: str) -> tuple[int, Optional[str]]:
     if match := re.search(r"S(\d{2,3})E(\d{2,3})", file_name, re.IGNORECASE):
         return int(match.group(2)), file_name.replace(match.group(), "").strip()
     # use regex to find the episode number
-    if match := re.search(r"(\d{2,3})", file_name):
+    if match := re.search(r"(\d{1,3})", file_name):
         return int(match.group()), file_name.replace(match.group(), "").strip()
     # see if underscores are used
     for split_char in ["_", "-", "."]:
@@ -45,14 +45,14 @@ def parse_episode_number_and_name(file_name: str) -> tuple[int, Optional[str]]:
     return 0, None
 
 
-def get_video_files(file_path: Path) -> list[VideoFile]:
+def get_video_files(file_path: Path) -> dict[str, list[VideoFile]]:
     """
     Function to go to the provided file_path and returns a dictionary
     of all the files within the provided path
 
     :param Path file_path: Directory to get all files in
-    :return: List of video files
-    :rtype: list[VideoFile]
+    :return: Dictionary with a key for each season with a list of its videos
+    :rtype: dict[str, list[VideoFile]]
     """
     # plex supported videos
     video_types = [
@@ -69,7 +69,7 @@ def get_video_files(file_path: Path) -> list[VideoFile]:
         ".mpg",
     ]
     season_file_mapping = {}
-    videos = []
+    videos = {}
 
     # verify the provided file_path exists
     if os.path.exists(file_path):
@@ -86,10 +86,11 @@ def get_video_files(file_path: Path) -> list[VideoFile]:
             season_file_mapping[folder] = [Path(item) for item in season_folder]
 
         for folder, files in season_file_mapping.items():
+            videos[folder] = []
             # parse the needed information from the file path
             for file in files:
                 episode_number, episode_name = parse_episode_number_and_name(file.stem)
-                videos.append(
+                videos[folder].append(
                     VideoFile(
                         season=int(folder.split(" ")[-1]),
                         episode=episode_number,
@@ -101,6 +102,8 @@ def get_video_files(file_path: Path) -> list[VideoFile]:
                         index=files.index(file) + 1,
                     )
                 )
+            # sort the season folder by lowest episode number
+            videos[folder] = sorted(videos[folder], key=lambda x: x.episode)
     else:
         console.print(
             f"[red]The provided file path doesn't exist! Provided: {file_path}"
@@ -110,23 +113,31 @@ def get_video_files(file_path: Path) -> list[VideoFile]:
     return videos
 
 
-def rename_files(file_list: list[VideoFile]) -> int:
+def rename_files(videos_by_season: dict[str, list[VideoFile]]) -> int:
     """
     Function to rename the items in the provided file_list
-    :param list[VideoFile] file_list: List of VideoFiles that need to be renamed
+
+    :param dict[str, list[VideoFile]] videos_by_season: Dictionary with a key for each season with a list of its videos
     :return: # of files that were renamed
     :rtype: int
     """
     # create a counter for files renamed
     counter = 0
     failed_files = []
-    for video in file_list:
-        try:
-            os.rename(video.file_path, video.directory / video.new_name)
-            counter += 1
-        except Exception as e:
-            failed_files.append(video.file_name)
-            console.print(f"[red]Failed to rename {video.file_name} - {e}")
+    for _, videos in videos_by_season.items():
+        for video in videos:
+            try:
+                ep_number = (
+                    video.episode
+                    if video.episode < videos.index(video) + 1
+                    else videos.index(video) + 1
+                )
+                video.new_name = video.new_name.replace("<epNumber>", f"{ep_number:02}")
+                os.rename(video.file_path, video.directory / video.new_name)
+                counter += 1
+            except Exception as e:
+                failed_files.append(video.file_name)
+                console.print(f"[red]Failed to rename {video.file_name} - {e}")
     # return counter for console output
     if failed_files:
         console.print(

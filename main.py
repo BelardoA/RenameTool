@@ -51,7 +51,9 @@ def _rename_from_root(root: Path) -> None:
     rename_counter = rename_files(videos)
     end_time = time.time()
     elapsed_time = end_time - start_time
-    console.print(f"[green] Renamed {rename_counter} files in {elapsed_time} second(s).")
+    console.print(
+        f"[green] Renamed {rename_counter} files in {elapsed_time} second(s)."
+    )
 
 
 if __name__ == "__main__":

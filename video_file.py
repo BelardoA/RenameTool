@@ -51,9 +51,5 @@ class VideoFile(BaseModel):
 
         pattern = re.compile(r"\s*episode\s*", re.IGNORECASE)
         episode_name = f" {self.episode_name}" if self.episode_name else ""
-        if self.index < self.episode:
-            self.episode = self.index
-        episode_name = (
-            f"S{self.season:02}E{self.episode:02}{episode_name}{self.file_type}"
-        )
+        episode_name = f"S{self.season:02}E<epNumber>{episode_name}{self.file_type}"
         self.new_name = pattern.sub("", episode_name)
