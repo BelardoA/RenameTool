@@ -14,7 +14,7 @@ jobs:
       with:
         package-path: rename_tool
         python-version: ${{ matrix.python-version }}
-        requirements-path: rename_tool/requirements.txt
+        requirements-path: requirements.txt
         readme-path: README.md
         fail-below: 9.5
     - name: Set up Python ${{ matrix.python-version }}
